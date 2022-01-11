@@ -39,6 +39,8 @@ function App(props) {
   const searchItem = () => {
     const form = searchForm.current
     const id = form['key'].value;
+    if (id == '')
+      return false;
 
     fetch('http://localhost:8080/api/customers/key/' + id, {
       method: 'get',
