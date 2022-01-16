@@ -27,8 +27,8 @@ function AddEditForm(props) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        Lastname: form.Lastname,
         Firstname: form.Firstname,
+        Lastname: form.Lastname,
         Gender: form.Gender,
         Street: form.Street,
         Postalcode: form.Postalcode,
@@ -37,15 +37,15 @@ function AddEditForm(props) {
     })
       .then(response => response.json())
       .then(item => {
-        if (Array.isArray(item)) {
-          props.addItemToState(item[0])
+        console.log(item.id)
+        if (item.id) {
+          props.addItemToState(item)
           props.toggle()
         } else {
           console.log('failure')
         }
       })
       .catch(err => console.log(err))
-    window.location.reload(false);
   }
 
   const submitFormEdit = e => {
@@ -67,16 +67,16 @@ function AddEditForm(props) {
     })
       .then(response => response.json())
       .then(item => {
-        if (Array.isArray(item)) {
-          // console.log(item[0])
-          props.updateState(item[0])
+        console.log(item.item)
+        if (item.item) {
+          console.log(item.item)
+          props.updateState(item.item)
           props.toggle()
         } else {
           console.log('failure')
         }
       })
       .catch(err => console.log(err))
-    window.location.reload(false);
   }
 
   useEffect(() => {
@@ -90,9 +90,6 @@ function AddEditForm(props) {
 
   return (
     <Form onSubmit={props.item ? submitFormEdit : submitFormAdd}>
-
-
-
       <FormGroup>
         <Label for="Firstname">First Name</Label>
         <Input required type="text" name="Firstname" id="Firstname" onChange={onChange} value={form.Firstname === null ? '' : form.Firstname} />

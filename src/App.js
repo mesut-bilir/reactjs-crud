@@ -1,17 +1,39 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Container, Row, Col, Button, Input } from 'reactstrap'
-import ModalForm from './Components/Modals/Modal'
+import ModalForm from './Components/Modals/ModalForm'
 import DataTable from './Components/Tables/DataTable'
 
 function App(props) {
 
   const [items, setItems] = useState([])
+  //get all data
   const getItems = () => {
     fetch('http://localhost:8080/api/customers')
       .then(response => response.json())
       .then(items => setItems(items))
       .catch(err => console.log(err))
   }
+
+  
+  //search
+  const searchForm = useRef(null);
+  const searchItem = () => {
+    const form = searchForm.current
+    const id = form['key'].value;
+    if (id === '')
+      return false;
+
+    fetch('http://localhost:8080/api/customers/key/' + id, {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(response => response.json())
+      .then(items => setItems(items))
+      .catch(err => console.log(err))
+  }
+
 
 
   const addItemToState = (item) => {
@@ -32,27 +54,6 @@ function App(props) {
   useEffect(() => {
     getItems()
   }, []);
-
-
-  //search
-  const searchForm = useRef(null);
-  const searchItem = () => {
-    const form = searchForm.current
-    const id = form['key'].value;
-    if (id == '')
-      return false;
-
-    fetch('http://localhost:8080/api/customers/key/' + id, {
-      method: 'get',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-      .then(response => response.json())
-      .then(items => setItems(items))
-      .catch(err => console.log(err))
-  }
-
 
   return (
     <Container className="App">

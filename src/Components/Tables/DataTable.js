@@ -1,8 +1,9 @@
 import React from 'react'
 import { Table, Button } from 'reactstrap';
-import ModalForm from '../Modals/Modal'
+import ModalForm from '../Modals/ModalForm'
 
 function DataTable(props){
+  //delete data from db
   const deleteItem = id => {
     console.log(id);
     let confirmDelete = window.confirm('Delete item?')
@@ -11,10 +12,7 @@ function DataTable(props){
       method: 'delete',
       headers: {
         'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        id
-      })
+      }
     })
       .then(response => response.json())
       .then(item => {
