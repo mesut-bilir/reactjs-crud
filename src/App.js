@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef} from 'react'
 import { Container, Row, Col, Button, Input } from 'reactstrap'
-import ModalForm from './Components/Modals/ModalForm'
+import ModalButtonForm from './Components/Modals/ModalButtonForm'
 import DataTable from './Components/Tables/DataTable'
-
+//check props from inspect
 function App(props) {
 
   const [items, setItems] = useState([])
@@ -20,8 +20,11 @@ function App(props) {
   const searchItem = () => {
     const form = searchForm.current
     const id = form['key'].value;
-    if (id === '')
-      return false;
+    if (id === ''){
+       getItems();
+       return false;
+    }
+     
 
     fetch('http://localhost:8080/api/customers/key/' + id, {
       method: 'get',
@@ -34,26 +37,43 @@ function App(props) {
       .catch(err => console.log(err))
   }
 
-
-
   const addItemToState = (item) => {
+    console.log("add item to state: "+item.id);
     setItems([...items, item])
   }
 
   const updateState = (item) => {
+
     const itemIndex = items.findIndex(data => data.id === item.id)
     const newArray = [...items.slice(0, itemIndex), item, ...items.slice(itemIndex + 1)]
     setItems(newArray)
   }
 
   const deleteItemFromState = (id) => {
+    console.log("removed: "+id);
     const updatedItems = items.filter(item => item.id !== id)
     setItems(updatedItems)
   }
 
+  //  useEffect(() => {
+  //   console.log('onMount ', items);
+  //  });
+
+//hooks use in react functional 
+// Similar to componentDidMount and componentDidUpdate:
+//used for optimization
+//wheb raleted state updated, useEfect will work.
+//if you want to be sure your Component renderd..you can use useEffect
+//after load component we can change something ..useEffect is better for it
+
   useEffect(() => {
+    console.log('render page');
     getItems()
   }, []);
+
+// If you only want to run the function given to useEffect after the initial render, 
+// you can give it an empty array as second argument.
+
 
   return (
     <Container className="App">
@@ -65,7 +85,7 @@ function App(props) {
       <Row>
         <Col sm={11}>
           <form ref={searchForm}>
-            <Input name={'key'} />
+            <Input name={'key'}  placeholder={'Search...'}/>
           </form>
         </Col>
         <Col sm={1}>
@@ -80,7 +100,7 @@ function App(props) {
       </Row>
       <Row>
         <Col>
-          <ModalForm buttonLabel="Add Item" addItemToState={addItemToState} />
+          <ModalButtonForm buttonLabel="Add New Customer" addItemToState={addItemToState} />
         </Col>
       </Row>
     </Container>

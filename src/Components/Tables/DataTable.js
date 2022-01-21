@@ -1,6 +1,6 @@
 import React from 'react'
 import { Table, Button } from 'reactstrap';
-import ModalForm from '../Modals/ModalForm'
+import ModalButtonForm from '../Modals/ModalButtonForm'
 
 function DataTable(props){
   //delete data from db
@@ -16,6 +16,7 @@ function DataTable(props){
     })
       .then(response => response.json())
       .then(item => {
+          //delete data from state
         props.deleteItemFromState(id)
       })
       .catch(err => console.log(err))
@@ -34,7 +35,7 @@ function DataTable(props){
         <td>{item.City}</td>
         <td>
           <div style={{width:"110px"}}>
-            <ModalForm buttonLabel="Edit" item={item} updateState={props.updateState}/>
+            <ModalButtonForm buttonLabel="Edit" item={item} updateState={props.updateState}/>
             {' '}
             <Button color="danger" onClick={() => deleteItem(item.id)}>Del</Button>
           </div>

@@ -80,11 +80,13 @@ function AddEditForm(props) {
   }
 
   useEffect(() => {
+    console.log('Running effect ', props.item);
+    //in Add button props.item undefined
     if (props.item) {
       const { id, Firstname, Lastname, Gender, Street, Postalcode, City } = props.item
       setValues({ id, Firstname, Lastname, Gender, Street, Postalcode, City })
     }
-  }, false)
+  }, [])
 
 
 
@@ -98,7 +100,7 @@ function AddEditForm(props) {
         <Label for="Lastname">Last Name</Label>
         <Input required type="text" name="Lastname" id="Lastname" onChange={onChange} value={form.Lastname === null ? '' : form.Lastname} />
       </FormGroup>
-      <FormGroup controlId="formControlsSelect">
+      <FormGroup>
         <Label>Gender</Label>
         <Input required type="select" placeholder="select" name="Gender" id="Gender" onChange={onChange} value={form.Gender === null ? '' : form.Gender}>
           <option value="">Select</option>
