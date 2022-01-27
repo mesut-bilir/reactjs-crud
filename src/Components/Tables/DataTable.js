@@ -1,67 +1,77 @@
-import React from 'react'
+import React, { useState } from 'react';
 import { Table, Button } from 'reactstrap';
 import ModalButtonForm from '../Modals/ModalButtonForm'
+import CustomerDataService from "../../services/CustomerService";
+import SweetAlert from 'react-bootstrap-sweetalert';
 
-function DataTable(props){
+function DataTable(props) {
+  const [sweet, setSweet] = useState(false);
+
   //delete data from db
-  const deleteItem = id => {
+  const deleteItem = (id) => {
     console.log(id);
     let confirmDelete = window.confirm('Delete item?')
-    if(confirmDelete){
-      fetch('http://localhost:8080/api/customers/'+id, {
-      method: 'delete',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-      .then(response => response.json())
-      .then(item => {
-          //delete data from state
-        props.deleteItemFromState(id)
-      })
-      .catch(err => console.log(err))
+    if (confirmDelete) {
+      CustomerDataService.delete(id)
+        .then(response => {
+          console.log(response.data.success)
+          if (response.data.success) {
+            props.deleteItemFromState(id)
+            setSweet(true)
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     }
-  }
+  };
 
   const items = props.items.map(item => {
     return (
       <tr key={item.id}>
         <th scope="row">{item.id}</th>
-        <td>{item.Firstname}</td>
-        <td>{item.Lastname}</td>
-        <td>{item.Gender}</td>
-        <td>{item.Street}</td>
-        <td>{item.Postalcode}</td>
-        <td>{item.City}</td>
+        <td>{item.firstname}</td>
+        <td>{item.lastname}</td>
+        <td>{item.gender}</td>
+        <td>{item.street}</td>
+        <td>{item.postalcode}</td>
+        <td>{item.city}</td>
         <td>
-          <div style={{width:"110px"}}>
-            <ModalButtonForm buttonLabel="Edit" item={item} updateState={props.updateState}/>
+          <div style={{ width: "110px" }}>
+            <ModalButtonForm buttonLabel="Edit" item={item} updateState={props.updateState} />
             {' '}
             <Button color="danger" onClick={() => deleteItem(item.id)}>Del</Button>
           </div>
         </td>
       </tr>
-      )
-    })
-
+    )
+  })
+  const hideAlert = () => {
+    setSweet(false);
+  };
   return (
-    <Table responsive hover>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>First name</th>
-          <th>Last name</th>
-          <th>Gender</th>
-          <th>Street</th>
-          <th>Postal code</th>
-          <th>City</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {items}
-      </tbody>
-    </Table>
+    <>
+      {
+        sweet ? <SweetAlert title="Successfully" success onConfirm={hideAlert} /> : ''
+      }
+      <Table responsive hover>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>First name</th>
+            <th>Last name</th>
+            <th>Gender</th>
+            <th>Street</th>
+            <th>Postal code</th>
+            <th>City</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {items}
+        </tbody>
+      </Table>
+    </>
   )
 }
 
